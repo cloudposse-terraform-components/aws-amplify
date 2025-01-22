@@ -18,6 +18,7 @@ import (
 	helper "github.com/cloudposse/test-helpers/pkg/atmos/aws-component-helper"
 	"github.com/gruntwork-io/terratest/modules/aws"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
+	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -68,7 +69,21 @@ func TestComponent(t *testing.T) {
 
 		// Test phase: Validate the functionality of the ALB component
 		suite.Test(t, "basic", func(t *testing.T, atm *helper.Atmos) {
-			inputs := map[string]interface{}{}
+			hostnamePrefix := strings.ToLower(random.UniqueId())
+			inputs := map[string]interface{}{
+				"domain_config": map[string]interface{}{
+					"sub_domain": []map[string]interface{}{
+						{
+							"prefix":      fmt.Sprintf("%s-%s", hostnamePrefix, "example-prod"),
+							"branch_name": "main",
+						},
+						{
+							"prefix":      fmt.Sprintf("%s-%s", hostnamePrefix, "example-dev"),
+							"branch_name": "develop",
+						},
+					},
+				},
+			}
 			defer atm.GetAndDestroy("amplify/basic", "default-test", inputs)
 			component := atm.GetAndDeploy("amplify/basic", "default-test", inputs)
 			assert.NotNil(t, component)
