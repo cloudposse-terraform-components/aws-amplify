@@ -126,6 +126,7 @@ func TestComponent(t *testing.T) {
 
 			delegatedZoneId := atm.Output(dnsDelegatedComponent, "default_dns_zone_id")
 
+			// Remove this defer when and if [issue]( https://github.com/cloudposse-terraform-components/aws-amplify/issues/18) would be solved with custom HTTPS cert solution
 			defer func() {
 				dnsRecord, err := aws.GetRoute53RecordE(t, delegatedZoneId, certificateVerificationDNSRecordName, certificateVerificationDNSRecordType, awsRegion)
 				if err != nil {
