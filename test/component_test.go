@@ -15,7 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/route53"
 	route53_types "github.com/aws/aws-sdk-go-v2/service/route53/types"
 	"github.com/cloudposse/test-helpers/pkg/atmos"
-	helper "github.com/cloudposse/test-helpers/pkg/atmos/aws-component-helper"
+	helper "github.com/cloudposse/test-helpers/pkg/atmos/component-helper"
 	"github.com/gruntwork-io/terratest/modules/aws"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -24,196 +24,161 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestComponent(t *testing.T) {
-	// Define the AWS region to use for the tests
-	awsRegion := "us-east-2"
+type ComponentSuite struct {
+	helper.TestSuite
+}
 
-	// Initialize the test fixture
-	fixture := helper.NewFixture(t, "../", awsRegion, "test/fixtures")
+func (s *ComponentSuite) TestBasic() {
+	const component = "amplify/basic"
+	const stack = "default-test"
+	const awsRegion = "us-east-2"
 
-	// Ensure teardown is executed after the test
-	defer fixture.TearDown()
-	fixture.SetUp(&atmos.Options{})
+	hostnamePrefix := strings.ToLower(random.UniqueId())
+	inputs := map[string]interface{}{
+		"domain_config": map[string]interface{}{
+			"sub_domain": []map[string]interface{}{
+				{
+					"prefix":      fmt.Sprintf("%s-%s", hostnamePrefix, "example-prod"),
+					"branch_name": "main",
+				},
+				{
+					"prefix":      fmt.Sprintf("%s-%s", hostnamePrefix, "example-dev"),
+					"branch_name": "develop",
+				},
+			},
+		},
+	}
+	defer s.DestroyAtmosComponent(s.T(), component, stack, &inputs)
+	options, _ := s.DeployAtmosComponent(s.T(), component, stack, &inputs)
+	assert.NotNil(s.T(), options)
 
-	// Define the test suite
-	fixture.Suite("default", func(t *testing.T, suite *helper.Suite) {
-		// Setup phase: Create DNS zones for testing
-		suite.Setup(t, func(t *testing.T, atm *helper.Atmos) {
-			basicDomain := "components.cptest.test-automation.app"
+	dnsDelegatedOptions := s.GetAtmosOptions("dns-delegated", stack, nil)
+	delegatedDomain := atmos.Output(s.T(), dnsDelegatedOptions, "default_domain_name")
 
-			// Deploy the delegated DNS zone
-			inputs := map[string]interface{}{
-				"zone_config": []map[string]interface{}{
+	name := atmos.Output(s.T(), options, "name")
+	assert.NotEmpty(s.T(), name)
+
+	arn := atmos.Output(s.T(), options, "arn")
+	assert.NotEmpty(s.T(), arn)
+
+	id := strings.Split(arn, "/")[1]
+
+	defaultDomain := atmos.Output(s.T(), options, "default_domain")
+	assert.NotEmpty(s.T(), defaultDomain)
+
+	backendEnvironments := map[string]interface{}{}
+	atmos.OutputStruct(s.T(), options, "backend_environments", &backendEnvironments)
+	assert.Equal(s.T(), map[string]interface{}{}, backendEnvironments)
+
+	branchNames := atmos.OutputList(s.T(), options, "branch_names")
+	assert.Equal(s.T(), "develop", branchNames[0])
+	assert.Equal(s.T(), "main", branchNames[1])
+
+	webhooks := map[string]interface{}{}
+	atmos.OutputStruct(s.T(), options, "webhooks", &webhooks)
+	assert.Equal(s.T(), map[string]interface{}{}, webhooks)
+
+	domainAssociationArn := atmos.Output(s.T(), options, "domain_association_arn")
+	assert.NotEmpty(s.T(), domainAssociationArn)
+
+	certificateVerificationDNSRecord := atmos.Output(s.T(), options, "domain_association_certificate_verification_dns_record")
+	assert.NotEmpty(s.T(), certificateVerificationDNSRecord)
+
+	certificateVerificationDNSRecordArray := strings.Split(certificateVerificationDNSRecord, " ")
+	certificateVerificationDNSRecordName := strings.TrimRight(certificateVerificationDNSRecordArray[0], ".")
+	certificateVerificationDNSRecordType := certificateVerificationDNSRecordArray[1]
+
+	delegatedZoneId := atmos.Output(s.T(), dnsDelegatedOptions, "default_dns_zone_id")
+
+	defer func() {
+		dnsRecord, err := aws.GetRoute53RecordE(s.T(), delegatedZoneId, certificateVerificationDNSRecordName, certificateVerificationDNSRecordType, awsRegion)
+		if err != nil {
+			s.T().Logf("Failed to get DNS record %s: %s", certificateVerificationDNSRecord, err)
+			return
+		}
+		client := aws.NewRoute53Client(s.T(), awsRegion)
+		changeResourceRecordsSetInput := &route53.ChangeResourceRecordSetsInput{
+			HostedZoneId: &delegatedZoneId,
+			ChangeBatch: &route53_types.ChangeBatch{
+				Changes: []route53_types.Change{
 					{
-						"subdomain": suite.GetRandomIdentifier(),
-						"zone_name": basicDomain,
+						Action:            route53_types.ChangeActionDelete,
+						ResourceRecordSet: dnsRecord,
 					},
 				},
-			}
-			atm.GetAndDeploy("dns-delegated", "default-test", inputs)
-		})
+			},
+		}
+		_, err = client.ChangeResourceRecordSets(context.Background(), changeResourceRecordsSetInput)
+		if err != nil {
+			s.T().Logf("Failed to delete DNS record %s: %s", certificateVerificationDNSRecordName, err)
+		}
+	}()
 
-		// Teardown phase: Destroy the DNS zones created during setup
-		suite.TearDown(t, func(t *testing.T, atm *helper.Atmos) {
-			// Deploy the delegated DNS zone
-			inputs := map[string]interface{}{
-				"zone_config": []map[string]interface{}{
-					{
-						"subdomain": suite.GetRandomIdentifier(),
-						"zone_name": "components.cptest.test-automation.app",
-					},
-				},
-			}
-			atm.GetAndDestroy("dns-delegated", "default-test", inputs)
-		})
+	subDomain := atmos.OutputList(s.T(), options, "sub_domains")
+	assert.Equal(s.T(), 2, len(subDomain))
 
-		// Test phase: Validate the functionality of the ALB component
-		suite.Test(t, "basic", func(t *testing.T, atm *helper.Atmos) {
-			hostnamePrefix := strings.ToLower(random.UniqueId())
-			inputs := map[string]interface{}{
-				"domain_config": map[string]interface{}{
-					"sub_domain": []map[string]interface{}{
-						{
-							"prefix":      fmt.Sprintf("%s-%s", hostnamePrefix, "example-prod"),
-							"branch_name": "main",
-						},
-						{
-							"prefix":      fmt.Sprintf("%s-%s", hostnamePrefix, "example-dev"),
-							"branch_name": "develop",
-						},
-					},
-				},
-			}
-			defer atm.GetAndDestroy("amplify/basic", "default-test", inputs)
-			component := atm.GetAndDeploy("amplify/basic", "default-test", inputs)
-			assert.NotNil(t, component)
-
-			dnsDelegatedComponent := helper.NewAtmosComponent("dns-delegated", "default-test", map[string]interface{}{})
-			delegatedDomain := atm.Output(dnsDelegatedComponent, "default_domain_name")
-
-			name := atm.Output(component, "name")
-			assert.NotEmpty(t, name)
-
-			arn := atm.Output(component, "arn")
-			assert.NotEmpty(t, arn)
-
-			id := strings.Split(arn, "/")[1]
-
-			defaultDomain := atm.Output(component, "default_domain")
-			assert.NotEmpty(t, defaultDomain)
-
-			backendEnvironments := map[string]interface{}{}
-			atm.OutputStruct(component, "backend_environments", &backendEnvironments)
-			assert.Equal(t, map[string]interface{}{}, backendEnvironments)
-
-			branchNames := atm.OutputList(component, "branch_names")
-			assert.Equal(t, "develop", branchNames[0])
-			assert.Equal(t, "main", branchNames[1])
-
-			webhooks := map[string]interface{}{}
-			atm.OutputStruct(component, "webhooks", &webhooks)
-			assert.Equal(t, map[string]interface{}{}, webhooks)
-
-			domainAssociationArn := atm.Output(component, "domain_association_arn")
-			assert.NotEmpty(t, domainAssociationArn)
-
-			certificateVerificationDNSRecord := atm.Output(component, "domain_association_certificate_verification_dns_record")
-			assert.NotEmpty(t, certificateVerificationDNSRecord)
-
-			certificateVerificationDNSRecordArray := strings.Split(certificateVerificationDNSRecord, " ")
-			certificateVerificationDNSRecordName := strings.TrimRight(certificateVerificationDNSRecordArray[0], ".")
-			certificateVerificationDNSRecordType := certificateVerificationDNSRecordArray[1]
-
-			delegatedZoneId := atm.Output(dnsDelegatedComponent, "default_dns_zone_id")
-
-			// Remove this defer when and if [issue]( https://github.com/cloudposse-terraform-components/aws-amplify/issues/18) would be solved with custom HTTPS cert solution
-			defer func() {
-				dnsRecord, err := aws.GetRoute53RecordE(t, delegatedZoneId, certificateVerificationDNSRecordName, certificateVerificationDNSRecordType, awsRegion)
-				if err != nil {
-					t.Logf("Failed to get DNS record %s: %s", certificateVerificationDNSRecord, err)
-					return
-				}
-				client := aws.NewRoute53Client(t, awsRegion)
-				changeResourceRecordsSetInput := &route53.ChangeResourceRecordSetsInput{
-					HostedZoneId: &delegatedZoneId,
-					ChangeBatch: &route53_types.ChangeBatch{
-						Changes: []route53_types.Change{
-							{
-								Action:            route53_types.ChangeActionDelete,
-								ResourceRecordSet: dnsRecord,
-							},
-						},
-					},
-				}
-				_, err = client.ChangeResourceRecordSets(context.Background(), changeResourceRecordsSetInput)
-				if err != nil {
-					t.Logf("Failed to delete DNS record %s: %s", certificateVerificationDNSRecordName, err)
-				}
-			}()
-
-			subDomain := atm.OutputList(component, "sub_domains")
-			assert.Equal(t, 2, len(subDomain))
-
-			client := NewAmplifyClient(t, awsRegion)
-			apps, err := client.GetApp(context.Background(), &amplify.GetAppInput{
-				AppId: &id,
-			})
-
-			assert.NoError(t, err)
-			assert.Equal(t, arn, *apps.App.AppArn)
-			assert.Equal(t, defaultDomain, *apps.App.DefaultDomain)
-
-			var wg sync.WaitGroup
-
-			for _, branchName := range branchNames {
-				wg.Add(1)
-
-				go func() {
-					defer wg.Done()
-					jobId := StartDeploymentJob(t, client, &id, &branchName)
-					_, err = retry.DoWithRetryE(t, fmt.Sprintf("Wait deployment %s", branchName), 30, 10*time.Second, func() (string, error) {
-						job, err := client.GetJob(context.Background(), &amplify.GetJobInput{
-							AppId:      &id,
-							BranchName: &branchName,
-							JobId:      jobId,
-						})
-						if err == nil && job.Job.Summary.Status != amplify_types.JobStatusSucceed {
-							return "", fmt.Errorf("Job %s have status %s", *jobId, job.Job.Summary.Status)
-						}
-
-						return "", err
-					})
-					assert.NoError(t, err)
-				}()
-			}
-
-			wg.Wait()
-
-			branchDevelop, err := client.GetDomainAssociation(context.Background(), &amplify.GetDomainAssociationInput{
-				AppId:      &id,
-				DomainName: &delegatedDomain,
-			})
-			assert.NoError(t, err)
-
-			// Setup a TLS configuration to submit with the helper, a blank struct is acceptable
-			tlsConfig := tls.Config{}
-
-			// It can take a minute or so for the Instance to boot up, so retry a few times
-			maxRetries := 30
-			timeBetweenRetries := 5 * time.Second
-
-			for _, subDomain := range branchDevelop.DomainAssociation.SubDomains {
-				url := fmt.Sprintf("https://%s.%s", *subDomain.SubDomainSetting.Prefix, delegatedDomain)
-				options := http_helper.HttpGetOptions{Url: url, TlsConfig: &tlsConfig, Timeout: 10}
-				// Verify that we get back a 200 OK with the expected instanceText
-				validateResponse := func(statusCode int, body string) bool {
-					return statusCode == 200 && strings.Contains(body, "Web site created using create-react-app")
-				}
-				err := HttpGetWithRetryWithOptionsE(t, options, validateResponse, maxRetries, timeBetweenRetries)
-				assert.NoError(t, err)
-			}
-		})
+	client := NewAmplifyClient(s.T(), awsRegion)
+	apps, err := client.GetApp(context.Background(), &amplify.GetAppInput{
+		AppId: &id,
 	})
+
+	assert.NoError(s.T(), err)
+	assert.Equal(s.T(), arn, *apps.App.AppArn)
+	assert.Equal(s.T(), defaultDomain, *apps.App.DefaultDomain)
+
+	var wg sync.WaitGroup
+
+	for _, branchName := range branchNames {
+		wg.Add(1)
+
+		go func(branchName string) {
+			defer wg.Done()
+			jobId := StartDeploymentJob(s.T(), client, &id, &branchName)
+			_, err = retry.DoWithRetryE(s.T(), fmt.Sprintf("Wait deployment %s", branchName), 30, 10*time.Second, func() (string, error) {
+				job, err := client.GetJob(context.Background(), &amplify.GetJobInput{
+					AppId:      &id,
+					BranchName: &branchName,
+					JobId:      jobId,
+				})
+				if err == nil && job.Job.Summary.Status != amplify_types.JobStatusSucceed {
+					return "", fmt.Errorf("Job %s have status %s", *jobId, job.Job.Summary.Status)
+				}
+
+				return "", err
+			})
+			assert.NoError(s.T(), err)
+		}(branchName)
+	}
+
+	wg.Wait()
+
+	branchDevelop, err := client.GetDomainAssociation(context.Background(), &amplify.GetDomainAssociationInput{
+		AppId:      &id,
+		DomainName: &delegatedDomain,
+	})
+	assert.NoError(s.T(), err)
+
+	tlsConfig := tls.Config{}
+
+	maxRetries := 30
+	timeBetweenRetries := 5 * time.Second
+
+	for _, subDomain := range branchDevelop.DomainAssociation.SubDomains {
+		url := fmt.Sprintf("https://%s.%s", *subDomain.SubDomainSetting.Prefix, delegatedDomain)
+		options := http_helper.HttpGetOptions{Url: url, TlsConfig: &tlsConfig, Timeout: 10}
+		validateResponse := func(statusCode int, body string) bool {
+			return statusCode == 200 && strings.Contains(body, "Web site created using create-react-app")
+		}
+		err := HttpGetWithRetryWithOptionsE(s.T(), options, validateResponse, maxRetries, timeBetweenRetries)
+		assert.NoError(s.T(), err)
+	}
+}
+
+func (s *ComponentSuite) TestEnabledFlag() {
+	s.T().Skip("Skipping disabled Amplify test")
+	const component = "amplify/disabled"
+	const stack = "default-test"
+	s.VerifyEnabledFlag(component, stack, nil)
 }
 
 func StartDeploymentJob(t *testing.T, client *amplify.Client, id *string, branchName *string) *string {
@@ -245,6 +210,22 @@ func HttpGetWithRetryWithOptionsE(t *testing.T, options http_helper.HttpGetOptio
 	})
 
 	return err
+}
+
+func TestRunSuite(t *testing.T) {
+	suite := new(ComponentSuite)
+
+	subdomain := strings.ToLower(random.UniqueId())
+	inputs := map[string]interface{}{
+		"zone_config": []map[string]interface{}{
+			{
+				"subdomain": subdomain,
+				"zone_name": "components.cptest.test-automation.app",
+			},
+		},
+	}
+	suite.AddDependency(t, "dns-delegated", "default-test", &inputs)
+	helper.Run(t, suite)
 }
 
 func NewAmplifyClient(t *testing.T, region string) *amplify.Client {
