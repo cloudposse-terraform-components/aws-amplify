@@ -2,7 +2,7 @@ components:
   terraform:
     amplify/disabled:
       metadata:
-        component: amplify
+        component: target
       vars:
         enabled: false
         # https://docs.aws.amazon.com/amplify/latest/userguide/setting-up-GitHub-access.html
