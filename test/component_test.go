@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/amplify"
-	"github.com/aws/aws-sdk-go-v2/service/amplify/types"
+	awshelper "github.com/cloudposse/test-helpers/pkg/aws"
 	amplify_types "github.com/aws/aws-sdk-go-v2/service/amplify/types"
 	"github.com/aws/aws-sdk-go-v2/service/route53"
 	route53_types "github.com/aws/aws-sdk-go-v2/service/route53/types"
@@ -21,7 +21,6 @@ import (
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type ComponentSuite struct {
@@ -117,7 +116,7 @@ func (s *ComponentSuite) TestBasic() {
 	subDomain := atmos.OutputList(s.T(), options, "sub_domains")
 	assert.Equal(s.T(), 2, len(subDomain))
 
-	client := NewAmplifyClient(s.T(), awsRegion)
+	client := awshelper.NewAmplifyClient(s.T(), awsRegion)
 	apps, err := client.GetApp(context.Background(), &amplify.GetAppInput{
 		AppId: &id,
 	})
@@ -133,7 +132,7 @@ func (s *ComponentSuite) TestBasic() {
 
 		go func(branchName string) {
 			defer wg.Done()
-			jobId := StartDeploymentJob(s.T(), client, &id, &branchName)
+			jobId := awshelper.StartDeploymentJob(s.T(), context.Background(), client, &id, &branchName)
 			_, err = retry.DoWithRetryE(s.T(), fmt.Sprintf("Wait deployment %s", branchName), 30, 10*time.Second, func() (string, error) {
 				job, err := client.GetJob(context.Background(), &amplify.GetJobInput{
 					AppId:      &id,
@@ -172,36 +171,14 @@ func (s *ComponentSuite) TestBasic() {
 		err := HttpGetWithRetryWithOptionsE(s.T(), options, validateResponse, maxRetries, timeBetweenRetries)
 		assert.NoError(s.T(), err)
 	}
+
+	s.DriftTest(component, stack, &inputs)
 }
 
 func (s *ComponentSuite) TestEnabledFlag() {
-	s.T().Skip("Skipping disabled Amplify test")
 	const component = "amplify/disabled"
 	const stack = "default-test"
 	s.VerifyEnabledFlag(component, stack, nil)
-}
-
-func StartDeploymentJob(t *testing.T, client *amplify.Client, id *string, branchName *string) *string {
-	branch, err := client.GetBranch(context.Background(), &amplify.GetBranchInput{
-		AppId:      id,
-		BranchName: branchName,
-	})
-	require.NoError(t, err)
-
-	var jobType types.JobType
-	if branch.Branch.ActiveJobId == nil {
-		jobType = types.JobTypeRelease
-	} else {
-		jobType = types.JobTypeRetry
-	}
-	jobStart, err := client.StartJob(context.Background(), &amplify.StartJobInput{
-		AppId:      id,
-		BranchName: branchName,
-		JobId:      branch.Branch.ActiveJobId,
-		JobType:    jobType,
-	})
-	assert.NoError(t, err)
-	return jobStart.JobSummary.JobId
 }
 
 func HttpGetWithRetryWithOptionsE(t *testing.T, options http_helper.HttpGetOptions, validateResponse func(int, string) bool, retries int, sleepBetweenRetries time.Duration) error {
@@ -226,19 +203,4 @@ func TestRunSuite(t *testing.T) {
 	}
 	suite.AddDependency(t, "dns-delegated", "default-test", &inputs)
 	helper.Run(t, suite)
-}
-
-func NewAmplifyClient(t *testing.T, region string) *amplify.Client {
-	client, err := NewAmplifyClientE(t, region)
-	require.NoError(t, err)
-
-	return client
-}
-
-func NewAmplifyClientE(t *testing.T, region string) (*amplify.Client, error) {
-	sess, err := aws.NewAuthenticatedSession(region)
-	if err != nil {
-		return nil, err
-	}
-	return amplify.NewFromConfig(*sess), nil
 }

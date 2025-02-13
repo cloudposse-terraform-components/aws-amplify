@@ -1,5 +1,7 @@
 locals {
-  certificate_verification_dns_record_parts = split(" ", module.amplify_app.domain_association_certificate_verification_dns_record)
+  certificate_verification_dns_record_parts = module.this.enabled ? split(" ", module.amplify_app.domain_association_certificate_verification_dns_record) : []
+  sub_domains = module.this.enabled ? tolist(module.amplify_app.sub_domains) : []
+
 }
 
 # Create the SSL certificate validation record
@@ -26,15 +28,17 @@ module "subdomains_dns_record" {
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.3"
 
-  count = var.subdomains_dns_records_enabled && local.domain_config != null ? length(local.domain_config.sub_domain) : 0
+  count = var.subdomains_dns_records_enabled && module.this.enabled && local.domain_config != null ? length(local.domain_config.sub_domain) : 0
 
   zone_id = module.dns_delegated.outputs.default_dns_zone_id
 
-  dns_name = trimspace(split(" ", tolist(module.amplify_app.sub_domains)[count.index].dns_record)[0])
-  type     = trimspace(split(" ", tolist(module.amplify_app.sub_domains)[count.index].dns_record)[1])
+  dns_name = trimspace(split(" ", local.sub_domains[count.index].dns_record)[0])
+  type     = trimspace(split(" ", local.sub_domains[count.index].dns_record)[1])
+
+  ttl = 500
 
   records = [
-    trimspace(split(" ", tolist(module.amplify_app.sub_domains)[count.index].dns_record)[2])
+    trimspace(split(" ", local.sub_domains[count.index].dns_record)[2])
   ]
 
   context = module.this.context
