@@ -93,12 +93,8 @@ github.com/charmbracelet/lipgloss v0.10.0 h1:KWeXFSexGcfahHX+54URiZGkBFazf70JNMt
 github.com/charmbracelet/lipgloss v0.10.0/go.mod h1:Wig9DSfvANsxqkRsqj6x87irdy123SR4dOXlKa91ciE=
 github.com/charmbracelet/log v0.4.0 h1:G9bQAcx8rWA2T3pWvx7YtPTPwgqpk7D68BX21IRW8ZM=
 github.com/charmbracelet/log v0.4.0/go.mod h1:63bXt/djrizTec0l11H20t8FDSvA4CRZJ1KH22MdptM=
-github.com/cloudposse/test-helpers v0.15.1-0.20250212235801-10ffb4403004 h1:svoCKbgn522iIaBZZ9vUGS8faf/fPqYOL61lv2qTjIc=
-github.com/cloudposse/test-helpers v0.15.1-0.20250212235801-10ffb4403004/go.mod h1:NdcQ9rIuub6FrOC1wq1NdIZKQNe84GhlvpmzUxkIN8g=
-github.com/cloudposse/test-helpers v0.15.1-0.20250213000017-b50d29ce4d4e h1:0//GSPGW2a+4xkJGkiSfFOPYxevOoUfIJqeS/35xWNY=
-github.com/cloudposse/test-helpers v0.15.1-0.20250213000017-b50d29ce4d4e/go.mod h1:NdcQ9rIuub6FrOC1wq1NdIZKQNe84GhlvpmzUxkIN8g=
-github.com/cloudposse/test-helpers v0.15.1-0.20250213000357-23904e345a81 h1:TQ/b0SY1SeHe7hnSQcG3Do9QQtIXfAq1h3adBwAPKLo=
-github.com/cloudposse/test-helpers v0.15.1-0.20250213000357-23904e345a81/go.mod h1:NdcQ9rIuub6FrOC1wq1NdIZKQNe84GhlvpmzUxkIN8g=
+github.com/cloudposse/test-helpers v0.16.0 h1:j/xYtoR5G2FPyEI1/IIP9Rx7VmFuaBj7sdWPt2QaoEg=
+github.com/cloudposse/test-helpers v0.16.0/go.mod h1:NdcQ9rIuub6FrOC1wq1NdIZKQNe84GhlvpmzUxkIN8g=
 github.com/cpuguy83/go-md2man/v2 v2.0.6 h1:XJtiaUW6dEEqVuZiMTn1ldk455QWwEIsMIJlo5vtkx0=
 github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6NIQQ7OS05n1F4g=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -230,7 +226,6 @@ github.com/tmccombs/hcl2json v0.6.4 h1:/FWnzS9JCuyZ4MNwrG4vMrFrzRgsWEOVi+1AyYUVL
 github.com/tmccombs/hcl2json v0.6.4/go.mod h1:+ppKlIW3H5nsAsZddXPy2iMyvld3SHxyjswOZhavRDk=
 github.com/ulikunitz/xz v0.5.11 h1:kpFauv27b6ynzBNT/Xy+1k+fK4WswhN/6PN5WhFAGw8=
 github.com/ulikunitz/xz v0.5.11/go.mod h1:nbz6k7qbPmH4IRqmfOplQw/tblSgqTqBwxkY0oWt/14=
-github.com/urfave/cli v1.22.16 h1:MH0k6uJxdwdeWQTwhSO42Pwr4YLrNLwBtg1MRgTqPdQ=
 github.com/urfave/cli/v2 v2.27.5 h1:WoHEJLdsXr6dDWoJgMq/CboDmyY/8HMMH1fTECbih+w=
 github.com/urfave/cli/v2 v2.27.5/go.mod h1:3Sevf16NykTbInEnD0yKkjDAeZDS0A6bzhBH5hrMvTQ=
 github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 h1:gEOO8jv9F4OT7lGCjxCBTO/36wtF6j2nSip77qHd4x4=
