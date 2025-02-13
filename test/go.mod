@@ -12,8 +12,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-// replace github.com/cloudposse/test-helpers => /Users/goruha/projects/cloudposse/current/cloudposse-terraform-components/test-helpers
-
 // replace github.com/rebuy-de/aws-nuke/v2/mocks => github.com/ekristen/aws-nuke/v3/ v3.29.0
 
 require (
