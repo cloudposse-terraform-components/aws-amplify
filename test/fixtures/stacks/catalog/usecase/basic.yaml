@@ -1,0 +1,91 @@
+components:
+  terraform:
+    amplify/basic:
+      metadata:
+        component: target
+      vars:
+        enabled: true
+        # https://docs.aws.amazon.com/amplify/latest/userguide/setting-up-GitHub-access.html
+        github_personal_access_token_secret_path: "/amplify/github_personal_access_token"
+        platform: "WEB"
+        enable_auto_branch_creation: false
+        enable_basic_auth: false
+        enable_branch_auto_build: true
+        enable_branch_auto_deletion: false
+        iam_service_role_enabled: true
+        dns_delegated_component_name: "dns-delegated"
+        dns_delegated_environment_name: "ue2"
+
+        name: "example"
+        description: "example Amplify App"
+        repository: "https://github.com/cloudposse-tests/amplify"
+        # https://docs.aws.amazon.com/amplify/latest/userguide/ssr-CloudWatch-logs.html
+        iam_service_role_actions:
+          - "logs:CreateLogStream"
+          - "logs:CreateLogGroup"
+          - "logs:DescribeLogGroups"
+          - "logs:PutLogEvents"
+        custom_rules:
+          - source: "/<*>"
+            status:  "404"
+            target: "/index.html"
+        auto_branch_creation_patterns:
+          - "*"
+          - "*/**"
+        build_spec: |-
+            version: 1
+            appRoot: react-amplified/
+            frontend:
+              phases:
+                preBuild:
+                  commands:
+                    - nvm install
+                    - nvm use
+                    - yarn install  --frozen-lockfile
+                build:
+                  commands:
+                    - nvm install
+                    - nvm use
+                    - yarn run build
+              artifacts:
+                baseDirectory: build
+                files:
+                  - '**/*'
+              cache:
+                paths:
+                  - node_modules/**/*
+        environment_variables:
+          NEXT_PRIVATE_STANDALONE: false
+          NEXT_PUBLIC_TEST: test
+          _LIVE_UPDATES: '[{"pkg":"node","type":"nvm","version":"16"},{"pkg":"next-version","type":"internal","version":"13.1.1"}]'
+
+        environments:
+          main:
+            branch_name: "main"
+            enable_auto_build: true
+            backend_enabled: false
+            enable_performance_mode: false
+            enable_pull_request_preview: false
+            framework: "Next.js - SSR"
+            stage: "PRODUCTION"
+            environment_variables: {}
+          develop:
+            branch_name: "develop"
+            enable_auto_build: true
+            backend_enabled: false
+            enable_performance_mode: false
+            enable_pull_request_preview: false
+            framework: "Next.js - SSR"
+            stage: "DEVELOPMENT"
+            environment_variables: {}
+        domain_config:
+          enable_auto_sub_domain: false
+          wait_for_verification: false
+          sub_domain:
+            - branch_name: "main"
+              prefix: "example-prod"
+            - branch_name: "develop"
+              prefix: "example-dev"
+        subdomains_dns_records_enabled: true
+        certificate_verification_dns_record_enabled: false
+
