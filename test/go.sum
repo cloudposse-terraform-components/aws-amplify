@@ -32,8 +32,14 @@ github.com/aws/aws-sdk-go-v2/service/amplify v1.28.8 h1:wg7HSb3XnRAcom2v3nqxyAhm
 github.com/aws/aws-sdk-go-v2/service/amplify v1.28.8/go.mod h1:d0nnjwZRjEV9f6I8PEbBv0o3xjzVNLvlOYVxQs+FeEw=
 github.com/aws/aws-sdk-go-v2/service/autoscaling v1.51.12 h1:Bfz5hDqAgm9NByWdA0zfof70CVkjb6SE3RwU75lj66Y=
 github.com/aws/aws-sdk-go-v2/service/autoscaling v1.51.12/go.mod h1:+yg2Ygx7ParYfxoo1CLHzqD1zcmWuKNDfxuB8CrOx44=
+github.com/aws/aws-sdk-go-v2/service/backup v1.40.10 h1:/qkt3SKl7VUI48CV47dMdJGte/kg6YIs9HGucKRomY4=
+github.com/aws/aws-sdk-go-v2/service/backup v1.40.10/go.mod h1:Vdu4P8UrQhIh69PlgCuJFVicDJgy4Z6i0lAEpJLBw2Q=
+github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.47.4 h1:4hiC8jzPP89L+MTljvKs1LLC12gKJLMJwysjOrbJz1E=
+github.com/aws/aws-sdk-go-v2/service/cloudtrail v1.47.4/go.mod h1:Kj+z0vXRl21DsnPR+lA5DjVWCaRTvAmwQ/shTGHeY84=
 github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.45.12 h1:B7P9U6OmFa+TEnpny4JpWnYBkBfMMU592fomNZxVIc0=
 github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs v1.45.12/go.mod h1:omuyZE5hIJGMRTWvXfRPdEy85w4exm5e65/4ExTibJw=
+github.com/aws/aws-sdk-go-v2/service/docdb v1.40.10 h1:M+Pc9FI5Inm5P7IisViLbw8tnLyTvteTeuwN0mWPX8U=
+github.com/aws/aws-sdk-go-v2/service/docdb v1.40.10/go.mod h1:T0Kj3lj/4DSrtuqAt0yFLbhv5qydUgXEuL8enHpxpcg=
 github.com/aws/aws-sdk-go-v2/service/dynamodb v1.40.1 h1:JUvURAe0mNRzYd+1uTHEiojeyWtNPIQ5EXnDKfgKGUU=
 github.com/aws/aws-sdk-go-v2/service/dynamodb v1.40.1/go.mod h1:FcMiR2AALpkrpik6JzbYu+iEfktzrs3XOq5Shk9nvik=
 github.com/aws/aws-sdk-go-v2/service/ec2 v1.203.0 h1:EDLBXOs5D0KUqDThg8ID63mK5E7lJ8pjHGBtix6O9j0=
@@ -42,6 +48,8 @@ github.com/aws/aws-sdk-go-v2/service/ecr v1.41.0 h1:PNluoO7Sh1myhX+6MiAUpFk46fG6
 github.com/aws/aws-sdk-go-v2/service/ecr v1.41.0/go.mod h1:dtD3a4sjUjVL86e0NUvaqdGvds5ED6itUiZPDaT+Gh8=
 github.com/aws/aws-sdk-go-v2/service/ecs v1.53.13 h1:Q16+YitA+4nt8Iv+37l1Yav2ejlDb9umjJrEmX/3Xj4=
 github.com/aws/aws-sdk-go-v2/service/ecs v1.53.13/go.mod h1:X4pNdZOGNt0sWAErA0rQfrcl8NCoqDwAWtPa94bAafM=
+github.com/aws/aws-sdk-go-v2/service/efs v1.34.11 h1:PgeGNM3l3fg7UlFpIFEogySDrYsAeMVePZcHJJw5eVo=
+github.com/aws/aws-sdk-go-v2/service/efs v1.34.11/go.mod h1:pH1iibM/aigOyMTkB9RFdGDXbofNRaLzh1qoh2fIp6E=
 github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2 v1.43.12 h1:PLoBTtHl376mmxe5NSMUx1UD8yiM+BgIi9yJ1SgibHk=
 github.com/aws/aws-sdk-go-v2/service/elasticloadbalancingv2 v1.43.12/go.mod h1:h7JSZfD6QGeaAWpTk0+e1hQw2Venf5gh7UlUTEAiZL8=
 github.com/aws/aws-sdk-go-v2/service/iam v1.39.1 h1:N4OauekXigX0GgsJ+FUm7OO5HkrJR0ByZJ2YS5PIy3U=
@@ -56,6 +64,8 @@ github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.13 h1:SYVGSFQH
 github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.12.13/go.mod h1:kizuDaLX37bG5WZaoxGPQR/LNFXpxp0vsUnqfkWXfNE=
 github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.18.13 h1:OBsrtam3rk8NfBEq7OLOMm5HtQ9Yyw32X4UQMya/wjw=
 github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.18.13/go.mod h1:3U4gFA5pmoCOja7aq4nSaIAGbaOHv2Yl2ug018cmC+Q=
+github.com/aws/aws-sdk-go-v2/service/kafka v1.38.16 h1:r1mu+ZsoNt+3AuqYMyG2JoMkt6pYhfrzY34ENMVm6Uc=
+github.com/aws/aws-sdk-go-v2/service/kafka v1.38.16/go.mod h1:HLgqO1+m+EYx7ldJjwYSMwOHV1+RPsIVBtpsv3MM/zI=
 github.com/aws/aws-sdk-go-v2/service/kms v1.37.18 h1:pi9M/9n1PLayBXjia7LfwgXwcpFdFO7Q2cqKOZa1ZmM=
 github.com/aws/aws-sdk-go-v2/service/kms v1.37.18/go.mod h1:vZXvmzfhdsPj/axc8+qk/2fSCP4hGyaZ1MAduWEHAxM=
 github.com/aws/aws-sdk-go-v2/service/lambda v1.69.12 h1:9L6sXmGtRvBFzgf14G4EwlGrFkhltigC3fbGIqZ5g+c=
@@ -68,6 +78,8 @@ github.com/aws/aws-sdk-go-v2/service/s3 v1.76.1 h1:d4ZG8mELlLeUWFBMCqPtRfEP3J6aQ
 github.com/aws/aws-sdk-go-v2/service/s3 v1.76.1/go.mod h1:uZoEIR6PzGOZEjgAZE4hfYfsqK2zOHhq68JLKEvvXj4=
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.18 h1:U/gg5eOAPx9vzip9A6cQ2GkIAPBthHMaKDfZ/WWEuj0=
 github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.34.18/go.mod h1:ul2OTb6zT/dpZX/2bxKVwa6eIDBBlPNuau9uZuIoRAI=
+github.com/aws/aws-sdk-go-v2/service/sesv2 v1.41.5 h1:4Axfv4Ytz7gMiAigzbS3NXWcXRFFHBZB8vFcG7oYRsk=
+github.com/aws/aws-sdk-go-v2/service/sesv2 v1.41.5/go.mod h1:taGBqRDPFzem7/4UB0O8Sua9i1gRXg9fEWgUMKXeunA=
 github.com/aws/aws-sdk-go-v2/service/sns v1.33.19 h1:ghgWtf6FnkD6YqDUq65Zg5lzQ92xADHBoJdWUyChiFw=
 github.com/aws/aws-sdk-go-v2/service/sns v1.33.19/go.mod h1:/TQAkYgLlLoH1/2Y9qgaE460iPWhdq67emlW/ue42U8=
 github.com/aws/aws-sdk-go-v2/service/sqs v1.37.14 h1:KSVbQW2umLp7i4Lo6mvBUz5PqV+Ze/IL6LCTasxQWEk=
@@ -93,8 +105,8 @@ github.com/charmbracelet/lipgloss v0.10.0 h1:KWeXFSexGcfahHX+54URiZGkBFazf70JNMt
 github.com/charmbracelet/lipgloss v0.10.0/go.mod h1:Wig9DSfvANsxqkRsqj6x87irdy123SR4dOXlKa91ciE=
 github.com/charmbracelet/log v0.4.0 h1:G9bQAcx8rWA2T3pWvx7YtPTPwgqpk7D68BX21IRW8ZM=
 github.com/charmbracelet/log v0.4.0/go.mod h1:63bXt/djrizTec0l11H20t8FDSvA4CRZJ1KH22MdptM=
-github.com/cloudposse/test-helpers v0.16.0 h1:j/xYtoR5G2FPyEI1/IIP9Rx7VmFuaBj7sdWPt2QaoEg=
-github.com/cloudposse/test-helpers v0.16.0/go.mod h1:NdcQ9rIuub6FrOC1wq1NdIZKQNe84GhlvpmzUxkIN8g=
+github.com/cloudposse/test-helpers v0.18.0 h1:GBwq8hysUq1i8IuNNE9+NdQBNgsDePB5E+AoSfERe6o=
+github.com/cloudposse/test-helpers v0.18.0/go.mod h1:mhUUbB4JSuc9IwEuF9iQnjdXYjtbcHuL69EhLfNQ1VE=
 github.com/cpuguy83/go-md2man/v2 v2.0.6 h1:XJtiaUW6dEEqVuZiMTn1ldk455QWwEIsMIJlo5vtkx0=
 github.com/cpuguy83/go-md2man/v2 v2.0.6/go.mod h1:oOW0eioCTA6cOiMLiUPZOpcVxMig6NIQQ7OS05n1F4g=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
