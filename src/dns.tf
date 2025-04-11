@@ -7,7 +7,7 @@ locals {
 # Create the SSL certificate validation record
 module "certificate_verification_dns_record" {
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.3"
+  version = "0.13.0"
 
   count = var.certificate_verification_dns_record_enabled ? 1 : 0
 
@@ -26,7 +26,7 @@ module "certificate_verification_dns_record" {
 # Create DNS records for the subdomains
 module "subdomains_dns_record" {
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.3"
+  version = "0.13.0"
 
   count = var.subdomains_dns_records_enabled && module.this.enabled && local.domain_config != null ? length(local.domain_config.sub_domain) : 0
 
