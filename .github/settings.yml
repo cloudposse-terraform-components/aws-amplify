@@ -5,3 +5,4 @@ repository:
   description: This component is responsible for provisioning AWS Amplify apps, backend environments, branches, domain associations, and webhooks
   homepage: https://cloudposse.com/accelerate
   topics: terraform, terraform-component
+
