@@ -1,7 +1,7 @@
 locals {
-  certificate_verification_dns_record_parts = module.this.enabled ? split(" ", module.amplify_app.domain_association_certificate_verification_dns_record) : []
+  certificate_verification_dns_record_parts = module.this.enabled ? split(" ", module.amplify_app.domain_associations[local.domain_config.domain_name].certificate_verification_dns_record) : []
 
-  sub_domains = module.this.enabled ? tolist(module.amplify_app.sub_domains) : []
+  sub_domains = module.this.enabled ? tolist(module.amplify_app.domain_associations[local.domain_config.domain_name].sub_domain) : []
 }
 
 # Create the SSL certificate validation record
