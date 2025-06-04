@@ -28,7 +28,7 @@ output "webhooks" {
   value       = module.amplify_app.webhooks
 }
 
-output "domain_association" {
+output "domain_association_arn" {
   description = "ARN of the domain association"
   value       = module.amplify_app.domain_associations[local.domain_config.domain_name].arn
 }
