@@ -28,17 +28,23 @@ output "webhooks" {
   value       = module.amplify_app.webhooks
 }
 
+output "domain_associations" {
+  description = "Domain associations"
+  value       = module.amplify_app.domain_associations
+}
+
 output "domain_association_arn" {
   description = "ARN of the domain association"
-  value       = module.amplify_app.domain_association_arn
+  value       = try(module.amplify_app.domain_associations[local.domain_config.domain_name].arn, null)
 }
 
 output "domain_association_certificate_verification_dns_record" {
   description = "The DNS record for certificate verification"
-  value       = module.amplify_app.domain_association_certificate_verification_dns_record
+  value       = try(module.amplify_app.domain_associations[local.domain_config.domain_name].certificate_verification_dns_record, null)
 }
 
 output "sub_domains" {
   description = "DNS records and the verified status for the subdomains"
-  value       = module.amplify_app.sub_domains
+  value       = try(module.amplify_app.domain_associations[local.domain_config.domain_name].sub_domain[*].dns_record, null)
 }
+

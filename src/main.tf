@@ -19,7 +19,7 @@ data "aws_ssm_parameter" "github_pat" {
 
 module "amplify_app" {
   source  = "cloudposse/amplify-app/aws"
-  version = "0.3.0"
+  version = "1.2.0"
 
   description                   = var.description
   repository                    = var.repository
