@@ -179,7 +179,7 @@ atmos terraform apply amplify/example -s <stack>
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_amplify_app"></a> [amplify\_app](#module\_amplify\_app) | cloudposse/amplify-app/aws | 0.3.0 |
+| <a name="module_amplify_app"></a> [amplify\_app](#module\_amplify\_app) | cloudposse/amplify-app/aws | 1.2.0 |
 | <a name="module_certificate_verification_dns_record"></a> [certificate\_verification\_dns\_record](#module\_certificate\_verification\_dns\_record) | cloudposse/route53-cluster-hostname/aws | 0.13.0 |
 | <a name="module_dns_delegated"></a> [dns\_delegated](#module\_dns\_delegated) | cloudposse/stack-config/yaml//modules/remote-state | 1.8.0 |
 | <a name="module_iam_roles"></a> [iam\_roles](#module\_iam\_roles) | ../account-map/modules/iam-roles | n/a |
@@ -250,6 +250,7 @@ atmos terraform apply amplify/example -s <stack>
 | <a name="output_default_domain"></a> [default\_domain](#output\_default\_domain) | Amplify App domain (non-custom) |
 | <a name="output_domain_association_arn"></a> [domain\_association\_arn](#output\_domain\_association\_arn) | ARN of the domain association |
 | <a name="output_domain_association_certificate_verification_dns_record"></a> [domain\_association\_certificate\_verification\_dns\_record](#output\_domain\_association\_certificate\_verification\_dns\_record) | The DNS record for certificate verification |
+| <a name="output_domain_associations"></a> [domain\_associations](#output\_domain\_associations) | Domain associations |
 | <a name="output_name"></a> [name](#output\_name) | Amplify App name |
 | <a name="output_sub_domains"></a> [sub\_domains](#output\_sub\_domains) | DNS records and the verified status for the subdomains |
 | <a name="output_webhooks"></a> [webhooks](#output\_webhooks) | Created webhooks |
