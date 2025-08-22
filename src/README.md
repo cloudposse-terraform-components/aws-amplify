@@ -9,7 +9,6 @@ tags:
 
 This component is responsible for provisioning AWS Amplify apps, backend environments, branches, domain associations,
 and webhooks.
-
 ## Usage
 
 **Stack Level**: Regional
@@ -141,7 +140,10 @@ atmos terraform apply amplify/example -s <stack>
 ```
 
 <!-- prettier-ignore-start -->
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- prettier-ignore-end -->
+
+
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
@@ -234,7 +236,21 @@ atmos terraform apply amplify/example -s <stack>
 | <a name="output_name"></a> [name](#output\_name) | Amplify App name |
 | <a name="output_sub_domains"></a> [sub\_domains](#output\_sub\_domains) | DNS records and the verified status for the subdomains |
 | <a name="output_webhooks"></a> [webhooks](#output\_webhooks) | Created webhooks |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-<!-- prettier-ignore-end -->
+<!-- markdownlint-restore -->
+
+
+
+## References
+
+
+- [AWS Amplify – Setting up GitHub access](https://docs.aws.amazon.com/amplify/latest/userguide/setting-up-GitHub-access.html) - 
+
+- [AWS Amplify – SSR CloudWatch Logs](https://docs.aws.amazon.com/amplify/latest/userguide/ssr-CloudWatch-logs.html) - 
+
+- [Example repository: amplify-test2](https://github.com/cloudposse/amplify-test2) - 
+
+
+
 
 [<img src="https://cloudposse.com/logo-300x69.svg" height="32" align="right"/>](https://cpco.io/homepage?utm_source=github&utm_medium=readme&utm_campaign=cloudposse-terraform-components/aws-amplify&utm_content=)
+
