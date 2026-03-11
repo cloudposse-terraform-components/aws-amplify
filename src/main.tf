@@ -5,7 +5,7 @@ locals {
     domain_name            = coalesce(lookup(var.domain_config, "domain_name", null), module.dns_delegated.outputs.default_domain_name)
     enable_auto_sub_domain = lookup(var.domain_config, "enable_auto_sub_domain", false)
     wait_for_verification  = lookup(var.domain_config, "wait_for_verification", false)
-    sub_domain             = lookup(var.domain_config, "sub_domain")
+    sub_domain             = var.domain_config["sub_domain"]
   } : null
 }
 
