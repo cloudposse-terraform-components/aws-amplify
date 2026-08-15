@@ -202,20 +202,21 @@ atmos terraform apply amplify/example -s <stack>
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.9.0, < 6.0.0 |
+| <a name="requirement_utils"></a> [utils](#requirement\_utils) | >= 2.0.0, < 3.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.9.0, < 6.0.0 |
-
+| <a name="provider_utils"></a> [utils](#provider\_utils) | >= 2.0.0, < 3.0.0 |
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_amplify_app"></a> [amplify\_app](#module\_amplify\_app) | cloudposse/amplify-app/aws | 1.2.0 |
 | <a name="module_certificate_verification_dns_record"></a> [certificate\_verification\_dns\_record](#module\_certificate\_verification\_dns\_record) | cloudposse/route53-cluster-hostname/aws | 0.13.0 |
-| <a name="module_dns_delegated"></a> [dns\_delegated](#module\_dns\_delegated) | cloudposse/stack-config/yaml//modules/remote-state | 1.8.0 |
+| <a name="module_dns_delegated"></a> [dns\_delegated](#module\_dns\_delegated) | cloudposse/stack-config/yaml//modules/remote-state | 2.0.0 |
 | <a name="module_iam_roles"></a> [iam\_roles](#module\_iam\_roles) | ../account-map/modules/iam-roles | n/a |
 | <a name="module_subdomains_dns_record"></a> [subdomains\_dns\_record](#module\_subdomains\_dns\_record) | cloudposse/route53-cluster-hostname/aws | 0.13.0 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.25.0 |
