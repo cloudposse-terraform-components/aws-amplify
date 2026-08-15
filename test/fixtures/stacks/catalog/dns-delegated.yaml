@@ -8,3 +8,4 @@ components:
           - subdomain: test
             zone_name: example.net
         request_acm_certificate: false
+        force_destroy: true
